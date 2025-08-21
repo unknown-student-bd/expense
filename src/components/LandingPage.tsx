@@ -63,14 +63,14 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
           </h1>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
             Track your income and expenses with beautiful charts, smart categorization, 
-            and powerful insights. Start your journey to financial freedom today.
+            and powerful insights. Completely free forever - start your journey to financial freedom today.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <button
               onClick={() => setAuthMode('signup')}
               className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg"
             >
-              Get Started Free
+              Get Started - It's Free!
             </button>
             <button
               onClick={() => setShowDonation(true)}
@@ -92,10 +92,10 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Everything You Need to Manage Money
+            Everything You Need - Completely Free
           </h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Powerful features designed to make financial tracking simple and insightful
+            Powerful features designed to make financial tracking simple and insightful - no hidden costs, no subscriptions
           </p>
         </div>
 
@@ -104,17 +104,17 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
             {
               icon: TrendingUp,
               title: 'Smart Analytics',
-              description: 'Beautiful charts and insights that help you understand your spending patterns and financial trends.'
+              description: 'Beautiful charts and insights that help you understand your spending patterns and financial trends. Upload receipts to keep track of your expenses.'
             },
             {
               icon: Shield,
               title: 'Secure & Private',
-              description: 'Your financial data is encrypted and secure. We never share your information with third parties.'
+              description: 'Your financial data is encrypted and secure. We never share your information with third parties. Always free.'
             },
             {
               icon: Users,
               title: 'Easy to Use',
-              description: 'Intuitive interface designed for everyone. Start tracking in minutes, not hours.'
+              description: 'Intuitive interface designed for everyone. Start tracking in minutes, not hours. No payment required.'
             }
           ].map((feature, index) => (
             <div key={index} className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6 hover:border-emerald-500/30 transition-all">
@@ -132,16 +132,16 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
       <section className="container mx-auto px-4 py-20">
         <div className="bg-gradient-to-r from-emerald-600/10 to-teal-600/10 border border-emerald-500/20 rounded-3xl p-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Ready to Transform Your Finances?
+            Ready to Transform Your Finances for Free?
           </h2>
           <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of users who have taken control of their financial future with our tracker.
+            Join thousands of users who have taken control of their financial future with our completely free tracker. No credit card required.
           </p>
           <button
             onClick={() => setAuthMode('signup')}
             className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg"
           >
-            Start Free Trial
+            Start Free - No Credit Card
           </button>
         </div>
       </section>
