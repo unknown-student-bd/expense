@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Plus, DollarSign, Calendar, Tag, FileText } from 'lucide-react'
+import { Plus, DollarSign, Calendar, Tag, FileText, Upload, X } from 'lucide-react'
 
 interface TransactionFormProps {
   onTransactionAdded: () => void
@@ -36,6 +36,8 @@ export default function TransactionForm({ onTransactionAdded }: TransactionFormP
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [loading, setLoading] = useState(false)
+  const [receipt, setReceipt] = useState<File | null>(null)
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,6 +66,8 @@ export default function TransactionForm({ onTransactionAdded }: TransactionFormP
       setCategory('')
       setDescription('')
       setDate(new Date().toISOString().split('T')[0])
+      setReceipt(null)
+      setReceiptPreview(null)
       
       onTransactionAdded()
     } catch (error: any) {
@@ -71,6 +75,37 @@ export default function TransactionForm({ onTransactionAdded }: TransactionFormP
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB')
+        return
+      }
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file')
+        return
+      }
+      
+      setReceipt(file)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setReceiptPreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const removeReceipt = () => {
+    setReceipt(null)
+    setReceiptPreview(null)
   }
 
   const categories = type === 'income' ? incomeCategories : expenseCategories
@@ -164,6 +199,60 @@ export default function TransactionForm({ onTransactionAdded }: TransactionFormP
             required
           />
         </div>
+
+        {/* Receipt Upload (only for expenses) */}
+        {type === 'expense' && (
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Receipt (Optional)
+            </label>
+            {!receipt ? (
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleReceiptChange}
+                  className="hidden"
+                  id="receipt-upload"
+                />
+                <label
+                  htmlFor="receipt-upload"
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-slate-700/50 border border-slate-600 border-dashed rounded-lg text-slate-300 hover:bg-slate-700 hover:border-slate-500 cursor-pointer transition-all"
+                >
+                  <Upload className="w-5 h-5" />
+                  <span>Upload Receipt Image</span>
+                </label>
+              </div>
+            ) : (
+              <div className="relative">
+                <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-300 text-sm font-medium">
+                      {receipt.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={removeReceipt}
+                      className="p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-all"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {receiptPreview && (
+                    <img
+                      src={receiptPreview}
+                      alt="Receipt preview"
+                      className="w-full h-32 object-cover rounded border border-slate-600"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-slate-400 mt-1">
+              Upload an image of your receipt (max 5MB). Supported formats: JPG, PNG, GIF
+            </p>
+          </div>
+        )}
 
         <button
           type="submit"

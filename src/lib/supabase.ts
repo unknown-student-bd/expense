@@ -12,6 +12,7 @@ export type Transaction = {
   amount: number
   category: string
   description?: string
+  receipt_url?: string
   date: string
   created_at: string
 }
