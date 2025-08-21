@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { LogIn, UserPlus, Mail, Lock } from 'lucide-react'
+import { LogIn, UserPlus, Mail, Lock, Github, Chrome, Apple } from 'lucide-react'
 
 interface AuthProps {
   onAuthSuccess: () => void
@@ -12,6 +12,7 @@ export default function Auth({ onAuthSuccess, onBack }: AuthProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [socialLoading, setSocialLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,6 +46,25 @@ export default function Auth({ onAuthSuccess, onBack }: AuthProps) {
     }
   }
 
+  const handleSocialAuth = async (provider: 'google' | 'github' | 'apple') => {
+    setSocialLoading(provider)
+    setError('')
+    
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin
+        }
+      })
+      if (error) throw error
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setSocialLoading(null)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -68,6 +88,68 @@ export default function Auth({ onAuthSuccess, onBack }: AuthProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Social Auth Buttons */}
+            <div className="space-y-3">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-slate-800 text-slate-400">Continue with</span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleSocialAuth('google')}
+                  disabled={socialLoading !== null}
+                  className="flex items-center justify-center px-4 py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition-all disabled:opacity-50"
+                >
+                  {socialLoading === 'google' ? (
+                    <div className="w-5 h-5 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin" />
+                  ) : (
+                    <Chrome className="w-5 h-5 text-slate-300" />
+                  )}
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => handleSocialAuth('github')}
+                  disabled={socialLoading !== null}
+                  className="flex items-center justify-center px-4 py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition-all disabled:opacity-50"
+                >
+                  {socialLoading === 'github' ? (
+                    <div className="w-5 h-5 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin" />
+                  ) : (
+                    <Github className="w-5 h-5 text-slate-300" />
+                  )}
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => handleSocialAuth('apple')}
+                  disabled={socialLoading !== null}
+                  className="flex items-center justify-center px-4 py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition-all disabled:opacity-50"
+                >
+                  {socialLoading === 'apple' ? (
+                    <div className="w-5 h-5 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin" />
+                  ) : (
+                    <Apple className="w-5 h-5 text-slate-300" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-600"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-slate-800 text-slate-400">Or continue with email</span>
+              </div>
+            </div>
+
             <div>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -104,10 +186,10 @@ export default function Auth({ onAuthSuccess, onBack }: AuthProps) {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || socialLoading !== null}
               className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
+              {loading || socialLoading !== null ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
@@ -125,12 +207,19 @@ export default function Auth({ onAuthSuccess, onBack }: AuthProps) {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
+              disabled={loading || socialLoading !== null}
               className="text-slate-400 hover:text-emerald-400 transition-colors"
             >
               {isLogin
                 ? "Don't have an account? Sign up"
                 : 'Already have an account? Sign in'}
             </button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <p className="text-xs text-slate-500">
+              By continuing, you agree to our Terms of Service and Privacy Policy
+            </p>
           </div>
         </div>
       </div>
