@@ -7,11 +7,11 @@ interface LandingPageProps {
 }
 
 export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
-  const [showAuth, setShowAuth] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | null>(null)
   const [showDonation, setShowDonation] = useState(false)
 
-  if (showAuth) {
-    return <Auth onAuthSuccess={onAuthSuccess} onBack={() => setShowAuth(false)} />
+  if (authMode) {
+    return <Auth onAuthSuccess={onAuthSuccess} onBack={() => setAuthMode(null)} initialMode={authMode} />
   }
 
   return (
@@ -38,10 +38,16 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
                 <span>Donate</span>
               </button>
               <button
-                onClick={() => setShowAuth(true)}
+                onClick={() => setAuthMode('login')}
+                className="px-4 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-lg transition-all"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => setAuthMode('signup')}
                 className="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-lg transition-all"
               >
-                Get Started
+                Sign Up
               </button>
             </div>
           </div>
@@ -61,16 +67,22 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <button
-              onClick={() => setShowAuth(true)}
+              onClick={() => setAuthMode('signup')}
               className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg"
             >
-              Start Tracking Now
+              Get Started Free
             </button>
             <button
               onClick={() => setShowDonation(true)}
               className="px-8 py-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-white font-semibold rounded-xl transition-all"
             >
               Support Us
+            </button>
+            <button
+              onClick={() => setAuthMode('login')}
+              className="px-8 py-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-white font-semibold rounded-xl transition-all"
+            >
+              Sign In
             </button>
           </div>
         </div>
@@ -126,10 +138,10 @@ export default function LandingPage({ onAuthSuccess }: LandingPageProps) {
             Join thousands of users who have taken control of their financial future with our tracker.
           </p>
           <button
-            onClick={() => setShowAuth(true)}
+            onClick={() => setAuthMode('signup')}
             className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg"
           >
-            Get Started Free
+            Start Free Trial
           </button>
         </div>
       </section>
